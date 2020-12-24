@@ -19,6 +19,11 @@ describe('middleware', function() {
         .expect('Content-Type', /^text\/event-stream\b/)
         .end(done);
     });
+    it('should return allow request header as origin on /__webpack_hmr', function(done) {
+      request('/__webpack_hmr')
+        .expect('Access-Control-Allow-Origin', 'http://localhost:1337')
+        .end(done);
+    });
     it('should heartbeat every 10 seconds', function(done) {
       request('/__webpack_hmr').end(function(err, res) {
         if (err) return done(err);
@@ -266,6 +271,7 @@ describe('middleware', function() {
     // Wrap some stuff up so supertest works with streaming responses
     var req = supertest(app)
       .get(path)
+      .set('origin', 'http://localhost:1337')
       .buffer(false);
     var end = req.end;
     req.end = function(callback) {
@@ -287,6 +293,7 @@ describe('middleware', function() {
 
       end.call(req, function() {});
     };
+
     return req;
   }
   function stats(data) {

@@ -46,6 +46,12 @@ describe('realistic single compiler', function() {
       .end(done);
   });
 
+  it('should return allow request header as origin on /__webpack_hmr', function(done) {
+    request('/__webpack_hmr')
+      .expect('Access-Control-Allow-Origin', 'http://localhost:1337')
+      .end(done);
+  });
+
   describe('first build', function() {
     it('should publish sync event', function(done) {
       request('/__webpack_hmr')
@@ -125,6 +131,7 @@ function request(path) {
   // Wrap some stuff up so supertest works with streaming responses
   var req = supertest(app)
     .get(path)
+    .set('origin', 'http://localhost:1337')
     .buffer(false);
   var end = req.end;
   req.end = function(callback) {

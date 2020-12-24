@@ -81,7 +81,7 @@ function createEventStream(heartbeat) {
     },
     handler: function(req, res) {
       var headers = {
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': req.headers.origin,
         'Content-Type': 'text/event-stream;charset=utf-8',
         'Cache-Control': 'no-cache, no-transform',
         // While behind nginx, event stream should not be buffered:
